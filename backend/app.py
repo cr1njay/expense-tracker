@@ -6,7 +6,10 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+from extenstions import db
+db.init_app(app)
+
+from models import Transaction
 
 @app.route('/')
 def index():
