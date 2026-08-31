@@ -76,7 +76,7 @@ def signup():
         email=data['email'],
         password_hash=hashed_password
     )
-    db.add(new_user)
+    db.session.add(new_user)
     db.session.commit()
     return {"message": "User created successfully!", "id": new_user.id, "username": new_user.username}, 201
 
