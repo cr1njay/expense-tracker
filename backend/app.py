@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["JWT_SECRET_KEY"] = "some-random-string-here"  # Change this to a random secret key in production
 
-from backend.extensions import db, jwt
+from extensions import db, jwt
 db.init_app(app)
 jwt.init_app(app)
 
