@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token
 
 app = Flask(__name__)
 
@@ -91,7 +92,8 @@ def login():
     if user:
         if not check_password_hash(user.password_hash, data['password']):
             return {"error": "Invalid username or password"}, 401
-        return {"message": "Login successful!", "id": user.id, "username": user.username}, 200
+        access_token = create_access_token(identity=user.id)
+        return {"message": "Login successful!", "access_token": access_token, "id": user.id, "username": user.username}, 200
 
 if __name__ == '__main__':
     app.run(debug=True)
