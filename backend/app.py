@@ -28,5 +28,10 @@ def create_transaction():
     db.session.commit()
     return {"message": "Transaction created successfully!", "transaction_id": new_transaction.id}, 201
 
+@app.route('/transactions')
+def get_transactions():
+    transactions = Transaction.query.all()
+    return [t.to_dict() for t in transactions]
+
 if __name__ == '__main__':
     app.run(debug=True)
