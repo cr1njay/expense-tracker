@@ -49,5 +49,20 @@ def delete_transaction(id):
     db.session.commit()
     return {"message": "Transaction deleted successfully!"}
 
+@app.route('/transactions/<int:id>', methods=['PUT'])
+def update_transaction(id):
+    transaction = Transaction.query.get(id)
+    if not transaction:
+        return {"error": "Transaction not found"}, 404
+    data = request.get_json()
+    if "amount" in data:
+        transaction.amount = data['amount']
+    if "description" in data:
+        transaction.description = data['description']
+    if "date" in data:
+        transaction.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+    db.session.commit()
+    return transaction.to_dict()
+
 if __name__ == '__main__':
     app.run(debug=True)
