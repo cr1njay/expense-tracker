@@ -43,10 +43,14 @@ def get_transactions():
     return [t.to_dict() for t in transactions]
 
 @app.route('/transactions/<int:id>')
+@jwt_required()
 def get_transaction(id):
+    current_user_id = get_jwt_identity()
     transaction = Transaction.query.get(id)
     if not transaction:
         return {"error": "Transaction not found"}, 404
+    if transaction.user_id != int(current_user_id):
+        return {"error": "Unauthorized access"}, 403
     return transaction.to_dict()
 
 @app.route('/transactions/<int:id>', methods=['DELETE'])
