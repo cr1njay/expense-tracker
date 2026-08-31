@@ -36,8 +36,10 @@ def create_transaction():
     return {"message": "Transaction created successfully!", "transaction_id": new_transaction.id}, 201
 
 @app.route('/transactions')
+@jwt_required()
 def get_transactions():
-    transactions = Transaction.query.all()
+    current_user_id = get_jwt_identity()
+    transactions = Transaction.query.filter_by(user_id=int(current_user_id)).all()
     return [t.to_dict() for t in transactions]
 
 @app.route('/transactions/<int:id>')
