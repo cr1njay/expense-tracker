@@ -40,5 +40,14 @@ def get_transaction(id):
         return {"error": "Transaction not found"}, 404
     return transaction.to_dict()
 
+@app.route('/transactions/<int:id>', methods=['DELETE'])
+def delete_transaction(id):
+    transaction = Transaction.query.get(id)
+    if not transaction:
+        return {"error": "Transaction not found"}, 404
+    db.session.delete(transaction)
+    db.session.commit()
+    return {"message": "Transaction deleted successfully!"}
+
 if __name__ == '__main__':
     app.run(debug=True)
