@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
@@ -63,6 +64,19 @@ def update_transaction(id):
         transaction.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
     db.session.commit()
     return transaction.to_dict()
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    hashed_password = generate_password_hash(data['password'])
+    new_user = User(
+        username=data['username'],
+        email=data['email'],
+        password_hash=hashed_password
+    )
+    db.add(new_user)
+    db.session.commit()
+    return {"message": "User created successfully!", "id": new_user.id, "username": new_user.username}, 201
 
 if __name__ == '__main__':
     app.run(debug=True)
