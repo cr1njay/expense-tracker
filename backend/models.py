@@ -6,3 +6,12 @@ class Transaction(db.Model):
     description = db.Column(db.String(200))
     date = db.Column(db.Date)
     created_at = db.Column(db.DateTime)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "amount": self.amount,
+            "description": self.description,
+            "date": self.date.isoformat(),
+            "created_at": self.created_at.isoformat()
+        }
