@@ -16,3 +16,10 @@ class Transaction(db.Model):
             "date": self.date.isoformat(),
             "created_at": self.created_at.isoformat()
         }
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True)
+    email = db.Column(db.String(120), unique=True)
+    password_hash = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
