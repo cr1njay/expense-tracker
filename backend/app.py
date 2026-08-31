@@ -80,5 +80,16 @@ def signup():
     db.session.commit()
     return {"message": "User created successfully!", "id": new_user.id, "username": new_user.username}, 201
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user = User.query.filter_by(username=data['username']).first()
+    if not user:
+        return {"error": "Invalid username or password"}, 401
+    if user:
+        if not check_password_hash(user.password_hash, data['password']):
+            return {"error": "Invalid username or password"}, 401
+        return {"message": "Login successful!", "id": user.id, "username": user.username}, 200
+
 if __name__ == '__main__':
     app.run(debug=True)
