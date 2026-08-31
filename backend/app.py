@@ -33,5 +33,12 @@ def get_transactions():
     transactions = Transaction.query.all()
     return [t.to_dict() for t in transactions]
 
+@app.route('/transactions/<int:id>')
+def get_transaction(id):
+    transaction = Transaction.query.get(id)
+    if not transaction:
+        return {"error": "Transaction not found"}, 404
+    return transaction.to_dict()
+
 if __name__ == '__main__':
     app.run(debug=True)
