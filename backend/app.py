@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 app = Flask(__name__)
 
@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["JWT_SECRET_KEY"] = "some-random-string-here"  # Change this to a random secret key in production
 
-from extenstions import db, jwt
+from backend.extensions import db, jwt
 db.init_app(app)
 jwt.init_app(app)
 
@@ -21,12 +21,15 @@ def index():
     return "Server is running!"
 
 @app.route('/transactions', methods=['POST'])
+@jwt_required()
 def create_transaction():
+    current_user_id = get_jwt_identity()
     data = request.get_json()
     new_transaction = Transaction(
         amount=data['amount'],
         description=data['description'],
         date=datetime.strptime(data['date'], '%Y-%m-%d').date(),
+        user_id=int(current_user_id)
     )
     db.session.add(new_transaction)
     db.session.commit()
@@ -92,7 +95,7 @@ def login():
     if user:
         if not check_password_hash(user.password_hash, data['password']):
             return {"error": "Invalid username or password"}, 401
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
         return {"message": "Login successful!", "access_token": access_token, "id": user.id, "username": user.username}, 200
 
 if __name__ == '__main__':

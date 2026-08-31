@@ -1,4 +1,4 @@
-from extenstions import db
+from backend.extensions import db
 from datetime import datetime
 
 class Transaction(db.Model):
@@ -7,6 +7,7 @@ class Transaction(db.Model):
     description = db.Column(db.String(200))
     date = db.Column(db.Date)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def to_dict(self):
         return {
@@ -14,7 +15,8 @@ class Transaction(db.Model):
             "amount": self.amount,
             "description": self.description,
             "date": self.date.isoformat(),
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at.isoformat(),
+            "user_id": self.user_id
         }
 
 class User(db.Model):
