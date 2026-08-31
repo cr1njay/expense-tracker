@@ -67,10 +67,14 @@ def delete_transaction(id):
     return {"message": "Transaction deleted successfully!"}
 
 @app.route('/transactions/<int:id>', methods=['PUT'])
+@jwt_required()
 def update_transaction(id):
+    current_user_id = get_jwt_identity()
     transaction = Transaction.query.get(id)
     if not transaction:
         return {"error": "Transaction not found"}, 404
+    if transaction.user_id != int(current_user_id):
+        return {"error": "Unauthorized access"}, 403
     data = request.get_json()
     if "amount" in data:
         transaction.amount = data['amount']
