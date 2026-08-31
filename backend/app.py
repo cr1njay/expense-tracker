@@ -65,6 +65,8 @@ def update_transaction(id):
     db.session.commit()
     return transaction.to_dict()
 
+from models import User
+
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
