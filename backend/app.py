@@ -54,10 +54,14 @@ def get_transaction(id):
     return transaction.to_dict()
 
 @app.route('/transactions/<int:id>', methods=['DELETE'])
+@jwt_required()
 def delete_transaction(id):
+    current_user_id = get_jwt_identity()
     transaction = Transaction.query.get(id)
     if not transaction:
         return {"error": "Transaction not found"}, 404
+    if transaction.user_id != int(current_user_id):
+        return {"error": "Unauthorized access"}, 403
     db.session.delete(transaction)
     db.session.commit()
     return {"message": "Transaction deleted successfully!"}
