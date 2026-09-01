@@ -1,22 +1,24 @@
 from extensions import db
-from datetime import datetime
+from datetime import datetime, date, timezone
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     amount = db.Column(db.Float)
     description = db.Column(db.String(200))
     date = db.Column(db.Date)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).date())
 
     def to_dict(self):
         return {
             "id": self.id,
+            "user_id": self.user_id,
+            "category_id": self.category_id,
             "amount": self.amount,
             "description": self.description,
             "date": self.date.isoformat(),
             "created_at": self.created_at.isoformat(),
-            "user_id": self.user_id
         }
 
 class User(db.Model):
@@ -24,4 +26,10 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(200))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).date())
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    name = db.Column(db.String(50))
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).date())
