@@ -27,9 +27,10 @@ def create_transaction():
     data = request.get_json()
     new_transaction = Transaction(
         user_id=int(current_user_id),
+        category_id=data.get('category_id'),
         amount=data['amount'],
         description=data['description'],
-        date=datetime.strptime(data['date'], '%Y-%m-%d').date() if 'date' in data else datetime.now().date(),
+        date=datetime.strptime(data['date'], '%Y-%m-%d').date()
     )
     db.session.add(new_transaction)
     db.session.commit()
@@ -82,6 +83,8 @@ def update_transaction(id):
         transaction.description = data['description']
     if "date" in data:
         transaction.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+    if "category_id" in data:
+        transaction.category_id = data['category_id']
     db.session.commit()
     return transaction.to_dict()
 
