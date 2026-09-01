@@ -33,3 +33,11 @@ class Category(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     name = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, default=datetime.now().date())
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "name": self.name,
+            "created_at": self.created_at.isoformat(),
+        }
