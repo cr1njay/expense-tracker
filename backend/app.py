@@ -243,7 +243,7 @@ def update_budget(id):
 @jwt_required()
 def get_summary_by_category():
     current_user_id = get_jwt_identity()
-    results = db.seession.query(Transaction.category_id, func.sum(Transaction.amount)) \
+    results = db.session.query(Transaction.category_id, func.sum(Transaction.amount)) \
         .filter_by(user_id=int(current_user_id)) \
         .group_by(Transaction.category_id) \
         .all()
