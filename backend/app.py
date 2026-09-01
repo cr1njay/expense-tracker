@@ -215,5 +215,28 @@ def delete_budget(id):
     db.session.commit()
     return {"message": "Budget deleted successfully!"}
 
+@app.route('/budgets/<int:id>', methods=['PUT'])
+@jwt_required()
+def update_budget(id):
+    current_user_id = get_jwt_identity()
+    budget = Budget.query.get(id)
+    if not budget:
+        return {"error": "Budget not found"}, 404
+    if budget.user_id != int(current_user_id):
+        return {"error": "Unauthorized access"}, 403
+    data = request.get_json()
+    if "amount" in data:
+        budget.amount = data['amount']
+    if "period" in data:
+        budget.period = data['period']
+    if "category_id" in data:
+        new_category_id = data['category_id']
+        category = Category.query.get(new_category_id)
+        if not category or category.user_id != int(current_user_id):
+            return {"error": "Invalid category"}, 400
+        budget.category_id = new_category_id
+    db.session.commit()
+    return budget.to_dict(), 200
+
 if __name__ == '__main__':
     app.run(debug=True)
