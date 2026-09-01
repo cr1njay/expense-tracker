@@ -25,9 +25,14 @@ def index():
 def create_transaction():
     current_user_id = get_jwt_identity()
     data = request.get_json()
+    category_id = data.get('category_id')
+    if category_id is not None:
+        category = Category.query.get(category_id)
+        if not category or category.user_id != int(current_user_id):
+            return {"error": "Invalid category"}, 400
     new_transaction = Transaction(
         user_id=int(current_user_id),
-        category_id=data.get('category_id'),
+        category_id=category_id,
         amount=data['amount'],
         description=data['description'],
         date=datetime.strptime(data['date'], '%Y-%m-%d').date()
@@ -84,7 +89,11 @@ def update_transaction(id):
     if "date" in data:
         transaction.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
     if "category_id" in data:
-        transaction.category_id = data['category_id']
+        new_category_id = data['category_id']
+        category = Category.query.get(new_category_id)
+        if not category or category.user_id != int(current_user_id):
+            return {"error": "Invalid category"}, 400
+        transaction.category_id = new_category_id
     db.session.commit()
     return transaction.to_dict()
 
