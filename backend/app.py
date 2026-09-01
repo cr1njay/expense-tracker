@@ -127,5 +127,12 @@ def create_category():
     db.session.commit()
     return new_category.to_dict(), 201
 
+@app.route('/categories')
+@jwt_required()
+def get_categories():
+    current_user_id = get_jwt_identity()
+    categories = Category.query.filter_by(user_id=int(current_user_id)).all()
+    return [c.to_dict() for c in categories]
+
 if __name__ == '__main__':
     app.run(debug=True)
