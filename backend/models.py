@@ -26,13 +26,13 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(200))
-    created_at = db.Column(db.DateTime, default=datetime.now().date())
+    created_at = db.Column(db.DateTime, default=datetime.now())
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     name = db.Column(db.String(50))
-    created_at = db.Column(db.DateTime, default=datetime.now().date())
+    created_at = db.Column(db.DateTime, default=datetime.now())
 
     def to_dict(self):
         return {
@@ -48,7 +48,7 @@ class Budget(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), default=None)
     amount = db.Column(db.Float)
     period = db.Column(db.String(20))
-    created_at = db.Column(db.DateTime, default=datetime.now().date())
+    created_at = db.Column(db.DateTime, default=datetime.now())
 
     def to_dict(self):
         return {
