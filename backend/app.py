@@ -159,5 +159,27 @@ def delete_category(id):
     db.session.commit()
     return {"message": "Category deleted successfully!"}
 
+from models import Budget
+
+@app.route('/budgets', methods=['POST'])
+@jwt_required()
+def create_budget():
+    current_user_id = get_jwt_identity()
+    data = request.get_json()
+    category_id = data.get('category_id')
+    if category_id is not None:
+        category = Category.query.get(category_id)
+        if not category or category.user_id != int(current_user_id):
+            return {"error": "Invalid category"}, 400
+    new_budget = Budget(
+        user_id=int(current_user_id),
+        category_id=category_id,
+        amount=data['amount'],
+        period=data['period']
+    )
+    db.session.add(new_budget)
+    db.session.commit()
+    return new_budget.to_dict(), 201
+
 if __name__ == '__main__':
     app.run(debug=True)
