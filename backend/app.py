@@ -260,5 +260,25 @@ def get_monthly_summary():
         .all()
     return [{"month": row[0], "total": row[1]} for row in results]
 
+@app.route('/summary/budget-vs-actual')
+@jwt_required()
+def get_budget_vs_actual():
+    current_user_id = get_jwt_identity()
+    results = []
+    budgets = Budget.query.filter_by(user_id=int(current_user_id)).all()
+    for budget in budgets:
+        actual = db.session.query(func.sum(Transaction.amount)) \
+            .filter_by(user_id=int(current_user_id)) \
+            .filter_by(category_id=budget.category_id) \
+            .filter(func.strftime('%Y-%m', Transaction.date) == budget.period) \
+            .scalar()
+        results.append({
+            "category_id": budget.category_id,
+            "period": budget.period,
+            "budgeted": budget.amount,
+            "actual": actual
+        })
+    return results
+
 if __name__ == '__main__':
     app.run(debug=True)
