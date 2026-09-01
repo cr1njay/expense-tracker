@@ -200,5 +200,18 @@ def get_budgets():
     budgets = Budget.query.filter_by(user_id=int(current_user_id)).all()
     return [b.to_dict() for b in budgets]
 
+@app.route('/budgets/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_budget(id):
+    current_user_id = get_jwt_identity()
+    budget = Budget.query.get(id)
+    if not budget:
+        return {"error": "Budget not found"}, 404
+    if budget.user_id != int(current_user_id):
+        return {"error": "Unauthorized access"}, 403
+    db.session.delete(budget)
+    db.session.commit()
+    return {"message": "Budget deleted successfully!"}
+
 if __name__ == '__main__':
     app.run(debug=True)
