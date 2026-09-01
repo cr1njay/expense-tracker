@@ -249,5 +249,16 @@ def get_summary_by_category():
         .all()
     return [{"category_id": row[0], "total_amount": row[1]} for row in results]
 
+@app.route('/summary/monthly')
+@jwt_required()
+def get_monthly_summary():
+    current_user_id = get_jwt_identity()
+    month = func.strftime('%Y-%m', Transaction.date)
+    results = db.session.query(month, func.sum(Transaction.amount)) \
+        .filter_by(user_id=int(current_user_id)) \
+        .group_by(month) \
+        .all()
+    return [{"month": row[0], "total": row[1]} for row in results]
+
 if __name__ == '__main__':
     app.run(debug=True)
