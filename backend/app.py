@@ -182,6 +182,10 @@ def create_budget():
     current_user_id = get_jwt_identity()
     data = request.get_json()
     category_id = data.get('category_id')
+    try:
+        datetime.strptime(data['period'], '%Y-%m')
+    except ValueError:
+        return {"error": "Period must be in YYYY-MM format."}, 400
     if category_id is not None:
         category = Category.query.get(category_id)
         if not category or category.user_id != int(current_user_id):
@@ -229,6 +233,10 @@ def update_budget(id):
     if "amount" in data:
         budget.amount = data['amount']
     if "period" in data:
+        try:
+            datetime.strptime(data['period'], '%Y-%m')
+        except ValueError:
+            return {"error": "Period must be in YYYY-MM format."}, 400
         budget.period = data['period']
     if "category_id" in data:
         new_category_id = data['category_id']
