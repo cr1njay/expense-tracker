@@ -26,10 +26,10 @@ def create_transaction():
     current_user_id = get_jwt_identity()
     data = request.get_json()
     new_transaction = Transaction(
+        user_id=int(current_user_id),
         amount=data['amount'],
         description=data['description'],
         date=datetime.strptime(data['date'], '%Y-%m-%d').date() if 'date' in data else datetime.now().date(),
-        user_id=int(current_user_id)
     )
     db.session.add(new_transaction)
     db.session.commit()
