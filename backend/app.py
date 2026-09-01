@@ -271,7 +271,7 @@ def get_budget_vs_actual():
             .filter_by(user_id=int(current_user_id)) \
             .filter_by(category_id=budget.category_id) \
             .filter(func.strftime('%Y-%m', Transaction.date) == budget.period) \
-            .scalar()
+            .scalar() or 0
         results.append({
             "category_id": budget.category_id,
             "period": budget.period,
