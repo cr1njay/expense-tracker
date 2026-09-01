@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, date, timezone
+from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
@@ -28,7 +28,7 @@ def create_transaction():
     new_transaction = Transaction(
         amount=data['amount'],
         description=data['description'],
-        date=datetime.strptime(data['date'], '%Y-%m-%d').date() if 'date' in data else datetime.now(timezone.utc).date(),
+        date=datetime.strptime(data['date'], '%Y-%m-%d').date() if 'date' in data else datetime.now().date(),
         user_id=int(current_user_id)
     )
     db.session.add(new_transaction)

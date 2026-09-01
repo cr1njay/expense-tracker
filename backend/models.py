@@ -1,5 +1,5 @@
 from extensions import db
-from datetime import datetime, date, timezone
+from datetime import datetime, date
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -8,7 +8,7 @@ class Transaction(db.Model):
     amount = db.Column(db.Float)
     description = db.Column(db.String(200))
     date = db.Column(db.Date)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).date())
+    created_at = db.Column(db.DateTime, default=datetime.now().date())
 
     def to_dict(self):
         return {
@@ -26,10 +26,10 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(200))
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).date())
+    created_at = db.Column(db.DateTime, default=datetime.now().date())
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     name = db.Column(db.String(50))
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc).date())
+    created_at = db.Column(db.DateTime, default=datetime.now().date())
