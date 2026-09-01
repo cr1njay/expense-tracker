@@ -112,5 +112,20 @@ def login():
         access_token = create_access_token(identity=str(user.id))
         return {"message": "Login successful!", "access_token": access_token, "id": user.id, "username": user.username}, 200
 
+from models import Category
+
+@app.route('/categories', methods=['POST'])
+@jwt_required()
+def create_category():
+    current_user_id = get_jwt_identity()
+    data = request.get_json()
+    new_category = Category(
+        user_id=int(current_user_id),
+        name=data['name']
+    )
+    db.session.add(new_category)
+    db.session.commit()
+    return new_category.to_dict(), 201
+
 if __name__ == '__main__':
     app.run(debug=True)
