@@ -41,3 +41,21 @@ class Category(db.Model):
             "name": self.name,
             "created_at": self.created_at.isoformat(),
         }
+
+class Budget(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), default=None)
+    amount = db.Column(db.Float)
+    period = db.Column(db.String(20))
+    created_at = db.Column(db.DateTime, default=datetime.now().date())
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "category_id": self.category_id,
+            "amount": self.amount,
+            "period": self.period,
+            "created_at": self.created_at.isoformat(),
+        }
