@@ -159,6 +159,18 @@ def delete_category(id):
     db.session.commit()
     return {"message": "Category deleted successfully!"}
 
+@app.route('/categories/<int:id>', methods=['PUT'])
+@jwt_required()
+def update_category(id):
+    current_user_id = get_jwt_identity()
+    category = Category.query.get(id)
+    if not category or category.user_id != int(current_user_id):
+        return {"error": "Invalid category"}, 403
+    data = request.get_json()
+    category.name = data['name']
+    db.session.commit()
+    return category.to_dict(), 200
+
 from models import Budget
 
 @app.route('/budgets', methods=['POST'])
