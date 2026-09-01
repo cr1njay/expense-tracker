@@ -134,5 +134,18 @@ def get_categories():
     categories = Category.query.filter_by(user_id=int(current_user_id)).all()
     return [c.to_dict() for c in categories]
 
+@app.route('/categories/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_category(id):
+    current_user_id = get_jwt_identity()
+    category = Category.query.get(id)
+    if not category:
+        return {"error": "Category not found"}, 404
+    if category.user_id != int(current_user_id):
+        return {"error": "Unauthorized access"}, 403
+    db.session.delete(category)
+    db.session.commit()
+    return {"message": "Category deleted successfully!"}
+
 if __name__ == '__main__':
     app.run(debug=True)
