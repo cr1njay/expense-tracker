@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from sqlalchemy import func
 
 app = Flask(__name__)
 
@@ -237,6 +238,16 @@ def update_budget(id):
         budget.category_id = new_category_id
     db.session.commit()
     return budget.to_dict(), 200
+
+@app.route('/summary/by-category')
+@jwt_required()
+def get_summary_by_category():
+    current_user_id = get_jwt_identity()
+    results = db.seession.query(Transaction.category_id, func.sum(Transaction.amount)) \
+        .filter_by(user_id=int(current_user_id)) \
+        .group_by(Transaction.category_id) \
+        .all()
+    return [{"category_id": row[0], "total_amount": row[1]} for row in results]
 
 if __name__ == '__main__':
     app.run(debug=True)
