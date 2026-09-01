@@ -164,8 +164,10 @@ def delete_category(id):
 def update_category(id):
     current_user_id = get_jwt_identity()
     category = Category.query.get(id)
-    if not category or category.user_id != int(current_user_id):
-        return {"error": "Invalid category"}, 403
+    if not category:
+        return {"error": "Category not found"}, 404
+    if category.user_id != int(current_user_id):
+        return {"error": "Unauthorized access"}, 403
     data = request.get_json()
     category.name = data['name']
     db.session.commit()
