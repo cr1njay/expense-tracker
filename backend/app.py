@@ -181,5 +181,12 @@ def create_budget():
     db.session.commit()
     return new_budget.to_dict(), 201
 
+@app.route('/budgets')
+@jwt_required()
+def get_budgets():
+    current_user_id = get_jwt_identity()
+    budgets = Budget.query.filter_by(user_id=int(current_user_id)).all()
+    return [b.to_dict() for b in budgets]
+
 if __name__ == '__main__':
     app.run(debug=True)
