@@ -16,26 +16,5 @@ A full-stack web app for tracking personal expenses — log transactions, organi
 - **Frontend:** React
 - **Charts:** Recharts / Chart.js
 
-## Project Structure
-```
-expense-tracker/
-├── backend/     # Flask API, database models, business logic
-├── frontend/    # React app
-└── README.md
-```
-
-## Getting Started
-
-### Backend
-1. Navigate to `backend/`
-2. Create and activate a virtual environment
-3. Install dependencies: `pip install flask flask-sqlalchemy`
-4. Run the app
-
-### Frontend
-1. Navigate to `frontend/`
-2. Install dependencies
-3. Start the dev server
-
 ## Status
 🚧 In progress — currently building out the core API and data model.
