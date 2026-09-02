@@ -5,8 +5,8 @@ function App() {
   const [token, setToken] = useState(null)
   console.log(token)
   return (
-    <Login onLoginSuccess={setToken} />
-  )
+  token ? <p>Logged in!</p> : <Login onLoginSuccess={setToken} />
+)
 }
 
 export default App
