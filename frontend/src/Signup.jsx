@@ -1,37 +1,38 @@
 import { useState } from 'react'
 
-function Login({ onLoginSuccess }) {
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
+function Signup({ onSignupSuccess }) {
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-        fetch("http://127.0.0.1:5000/login", {
+        e.preventDefault();
+        fetch("http://127.0.0.1:5000/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: username, password: password })
+            body: JSON.stringify({ username: username, email: email, password: password })
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Login failed");
+                throw new Error("Signup failed");
             }
             return response.json();
         })
         .then(data => {
-            onLoginSuccess(data.access_token);
             console.log(data);
+            onSignupSuccess();
         })
         .catch(error => console.log(error));
     }
-    
 
     return (
         <form onSubmit={handleSubmit}>
             <input value={username} onChange={(e) => setUsername(e.target.value)}></input>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}></input>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
-            <button type="submit">Login</button>
+            <button type="submit">Sign Up</button>
         </form>
-    )
+    );
 }
 
-export default Login;
+export default Signup;
