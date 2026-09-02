@@ -46,7 +46,7 @@ def create_transaction():
     )
     db.session.add(new_transaction)
     db.session.commit()
-    return {"message": "Transaction created successfully!", "transaction_id": new_transaction.id}, 201
+    return new_transaction.to_dict(), 201
 
 @app.route('/transactions')
 @jwt_required()
