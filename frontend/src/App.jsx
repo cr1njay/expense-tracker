@@ -1,6 +1,11 @@
+import Login from './Login'
+import { useState } from 'react'
+
 function App() {
+  const [token, setToken] = useState(null)
+  console.log(token)
   return (
-    <h1>Expense Tracker</h1>
+    <Login onLoginSuccess={setToken} />
   )
 }
 
