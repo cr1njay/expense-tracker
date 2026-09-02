@@ -7,6 +7,7 @@ function App() {
   const [token, setToken] = useState(null)
   const [showSignup, setShowSignup] = useState(false)
   console.log(token)
+  
   return (
     token ? (
       <Transactions token={token} />
