@@ -95,7 +95,7 @@ def update_transaction(id):
         transaction.description = data['description']
     if "date" in data:
         transaction.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
-    if "category_id" in data:
+    if "category_id" in data and data['category_id'] is not None:
         new_category_id = data['category_id']
         category = Category.query.get(new_category_id)
         if not category or category.user_id != int(current_user_id):
