@@ -16,8 +16,8 @@ function App() {
       <button onClick={() => setShowSignup(true)}>Need an account? Sign up</button>
       <Login onLoginSuccess={setToken} />
     </>
-)
-)
+    )
+  )
 }
 
 export default App
