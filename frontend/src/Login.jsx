@@ -19,11 +19,9 @@ function Login({ onLoginSuccess }) {
         })
         .then(data => {
             onLoginSuccess(data.access_token);
-            console.log(data);
         })
         .catch(error => console.log(error));
     }
-    
 
     return (
         <form onSubmit={handleSubmit}>

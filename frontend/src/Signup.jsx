@@ -19,7 +19,6 @@ function Signup({ onSignupSuccess }) {
             return response.json();
         })
         .then(data => {
-            console.log(data);
             onSignupSuccess();
         })
         .catch(error => console.log(error));

@@ -42,8 +42,27 @@ function Transactions({ token }) {
             return response.json();
         })
         .then(data => {
-            console.log(data);
             setTransactions([...transactions, data]);
+        })
+        .catch(error => console.log(error));
+    }
+
+    const handleDelete = (id) => {
+        fetch(`http://127.0.0.1:5000/transactions/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to delete transaction");
+            }
+            return response.json();
+        })
+        .then(data => {
+            setTransactions(transactions.filter(t => t.id !== id));
         })
         .catch(error => console.log(error));
     }
@@ -58,7 +77,10 @@ function Transactions({ token }) {
             </form>
             <ul>
                 {transactions.map(t => (
-                    <li key={t.id}>{t.amount} - {t.description}</li>
+                    <li key={t.id}>
+                        {t.amount} - {t.description}
+                        <button onClick={() => handleDelete(t.id)}>Delete</button>
+                    </li>
                 ))}
             </ul>
         </>
