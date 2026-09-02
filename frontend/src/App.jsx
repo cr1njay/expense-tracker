@@ -1,5 +1,6 @@
 import Login from './Login'
 import Signup from './Signup'
+import Transactions from './Transactions'
 import { useState } from 'react'
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
   console.log(token)
   return (
     token ? (
-      <p>Logged in!</p>
+      <Transactions token={token} />
     ) : showSignup ? (
       <Signup onSignupSuccess={() => setShowSignup(false)} />
     ) : (
