@@ -98,9 +98,11 @@ def update_transaction(id):
     if "category_id" in data and data['category_id'] is not None:
         new_category_id = data['category_id']
         category = Category.query.get(new_category_id)
-        if not category or category.user_id != int(current_user_id):
+        if category is None or category.user_id != int(current_user_id):
             return {"error": "Invalid category"}, 400
         transaction.category_id = new_category_id
+    elif "category_id" in data and data['category_id'] is None:
+        transaction.category_id = None
     db.session.commit()
     return transaction.to_dict()
 
