@@ -6,6 +6,9 @@ import Categories from './Categories'
 import Summary from './Summary'
 import { useState, useEffect } from 'react'
 
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"))
   const [showSignup, setShowSignup] = useState(false)
@@ -18,12 +21,13 @@ function App() {
     }
   }, [token]);
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        setToken(null);
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+  }
 
   useEffect(() => {
+    if (!token) return;
     fetch("http://127.0.0.1:5000/categories", {
       headers: {
         "Content-Type": "application/json",
@@ -40,29 +44,33 @@ function App() {
       setCategories(data);
     })
     .catch(error => console.log(error));
-  }, [])
+  }, [token])
 
   return (
-    token ? (
-      <>
-        <button onClick={handleLogout}>Logout</button>
-        <button onClick={() => setView("transactions")}>Transactions</button>
-        <button onClick={() => setView("budgets")}>Budgets</button>
-        <button onClick={() => setView("summary")}>Summary</button>
-        <Summary token={token} categories={categories} />
-        <Categories token={token} categories={categories} setCategories={setCategories} />
-        {view === "transactions" && <Transactions token={token} categories={categories} />}
-        {view === "budgets" && <Budgets token={token} categories={categories} />}
-        {view === "summary" && <Summary token={token} categories={categories} />}
-      </>
-    ) : showSignup ? (
-      <Signup onSignupSuccess={() => setShowSignup(false)} />
-    ) : (
-    <>
-      <button onClick={() => setShowSignup(true)}>Need an account? Sign up</button>
-      <Login onLoginSuccess={setToken} />
-    </>
-    )
+    <div className="max-w-2xl mx-auto p-6 min-h-screen bg-background text-foreground">
+      {token ? (
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={handleLogout}>Logout</Button>
+            <Button onClick={() => setView("transactions")}>Transactions</Button>
+            <Button onClick={() => setView("budgets")}>Budgets</Button>
+            <Button onClick={() => setView("categories")}>Categories</Button>
+            <Button onClick={() => setView("summary")}>Summary</Button>
+          </div>
+          {view === "transactions" && <Transactions token={token} categories={categories} />}
+          {view === "budgets" && <Budgets token={token} categories={categories} />}
+          {view === "summary" && <Summary token={token} categories={categories} />}
+          {view === "categories" && <Categories token={token} categories={categories} setCategories={setCategories} />}
+        </div>
+      ) : showSignup ? (
+        <Signup onSignupSuccess={() => setShowSignup(false)} />
+      ) : (
+        <div className="flex flex-col gap-4">
+          <Button onClick={() => setShowSignup(true)}>Need an account? Sign up</Button>
+          <Login onLoginSuccess={setToken} />
+        </div>
+      )}
+    </div>
   )
 }
 

@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+
 function Transactions({ token, categories }) {
     const [transactions, setTransactions] = useState([])
     const [amount, setAmount] = useState("")
@@ -91,29 +94,57 @@ function Transactions({ token, categories }) {
     }
 
     return (
-        <>
-            <form onSubmit={handleSubmit}>
-                <input placeholder="Amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)}></input>
-                <input placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}></input>
-                <input placeholder="Date" type="date" value={date} onChange={(e) => setDate(e.target.value)}></input>
-                <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-                    <option value="">Select Category</option>
+        <Card>
+            <CardHeader>
+                <CardTitle>Transactions</CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 flex flex-col gap-4">
+                <form onSubmit={handleSubmit}>
+                    <input placeholder="Amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="border border-input bg-background rounded-md px-3 py-2"></input>
+                    <input placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} className="border border-input bg-background rounded-md px-3 py-2"></input>
+                    <input placeholder="Date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="border border-input bg-background rounded-md px-3 py-2"></input>
+                    <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="border border-input bg-background rounded-md px-3 py-2">
+                        <option value="">Select Category</option>
+                        {categories.map(c => (
+                            <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                    </select>
+                    <button type="submit" className="border border-input bg-background rounded-md px-3 py-2">{editingId ? "Update Transaction" : "Add Transaction"}</button>
+                </form>
+                <div className="flex flex-col gap-6">
                     {categories.map(c => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
+                        <div key={c.id}>
+                            <h3 className="font-semibold mb-2">{c.name}</h3>
+                            <ul className="flex flex-col gap-2">
+                                {transactions.filter(t => t.category_id === c.id).map(t => (
+                                    <li key={t.id} className="flex justify-between items-center">
+                                        <span>{t.amount} - {t.description}</span>
+                                        <div className="flex gap-2">
+                                            <Button onClick={() => handleEditClick(t)}>Edit</Button>
+                                            <Button onClick={() => handleDelete(t.id)}>Delete</Button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     ))}
-                </select>
-                <button type="submit">{editingId ? "Update Transaction" : "Add Transaction"}</button>
-            </form>
-            <ul>
-                {transactions.map(t => (
-                    <li key={t.id}>
-                        {t.amount} - {t.description} - {getCategoryName(t.category_id)}
-                        <button onClick={() => handleEditClick(t)}>Edit</button>
-                        <button onClick={() => handleDelete(t.id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
-        </>
+                    <div>
+                        <h3 className="font-semibold mb-2">Uncategorized</h3>
+                        <ul className="flex flex-col gap-2">
+                            {transactions.filter(t => !t.category_id).map(t => (
+                                <li key={t.id} className="flex justify-between items-center">
+                                    <span>{t.amount} - {t.description}</span>
+                                    <div className="flex gap-2">
+                                        <Button onClick={() => handleEditClick(t)}>Edit</Button>
+                                        <Button onClick={() => handleDelete(t.id)}>Delete</Button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
     )
 }
 

@@ -1,5 +1,8 @@
 import { useState } from 'react'
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+
 function Categories({ token, categories, setCategories }) {
     const [categoryId, setCategoryId] = useState("")
     const [newCategoryName, setNewCategoryName] = useState("")
@@ -61,21 +64,28 @@ function Categories({ token, categories, setCategories }) {
     }
 
     return (
-        <>
-            <form onSubmit={handleCreateCategory}>
-                <input placeholder="Category Name" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)}></input>
-                <button type="submit">{editingId ? "Update Category" : "Add Category"}</button>
-            </form>
-            <ul>
-                {categories.map(c => (
-                    <li key={c.id}>
-                        {c.name}
-                        <button onClick={() => handleEditClick(c)}>Edit</button>
-                        <button onClick={() => handleDeleteCategory(c.id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
-        </>
+        <Card>
+            <CardHeader>
+                <CardTitle>Categories</CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 flex flex-col gap-4">
+                <form onSubmit={handleCreateCategory}>
+                    <input placeholder="Category Name" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} className="border border-input bg-background rounded-md px-3 py-2"></input>
+                    <button type="submit" className="border border-input bg-background rounded-md px-3 py-2">{editingId ? "Update Category" : "Add Category"}</button>
+                </form>
+                <ul className="flex flex-col gap-2">
+                    {categories.map(c => (
+                        <li key={c.id} className="flex justify-between items-center">
+                            <span>{c.name}</span>
+                            <div className="flex gap-2">
+                                <Button onClick={() => handleEditClick(c)}>Edit</Button>
+                                <Button onClick={() => handleDeleteCategory(c.id)}>Delete</Button>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </CardContent>
+        </Card>
     )
 }
 

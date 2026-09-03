@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 function Summary({ token, categories }) {
     const [byCategory, setByCategory] = useState([]);
     const [monthly, setMonthly] = useState([]);
     const [budgetVsActual, setBudgetVsActual] = useState([]);
-    const getCategoryName = (categoryId) => {
-        const match = categories.find(c => c.id === categoryId);
-        return match ? match.name : "Uncategorized";
-    };
 
     useEffect(() => {
         fetch("http://127.0.0.1:5000/summary/by-category", {
@@ -67,30 +66,55 @@ function Summary({ token, categories }) {
     }, [token])
 
     return (
-        <>
-            <ul>
-                {byCategory.map((row, index) => (
-                    <li key={index}>
-                        {getCategoryName(row.category_id)}: ${row.total}
-                    </li>
-                ))}
-            </ul>
-            <ul>
-                {monthly.map((row, index) => (
-                    <li key={index}>
-                        {row.month}: ${row.total}
-                    </li>
-                ))}
-            </ul>
-            <ul>
-                {budgetVsActual.map((row, index) => (
-                    <li key={index}>
-                        {getCategoryName(row.category_id)}: Period: {row.period} - Budget: ${row.budgeted}, Actual: ${row.actual}
-                    </li>
-                ))}
-            </ul>
-        </>
-    )
+        <Card>
+            <CardHeader>
+                <CardTitle>Summary</CardTitle>
+            </CardHeader>
+        <CardContent className="p-4 flex flex-col gap-8">
+            <div>
+                <h2 className="font-semibold text-lg mb-3">Spending by Category</h2>
+                <div className="flex flex-col gap-3">
+                    {categories.map(c => {
+                        const row = byCategory.find(r => r.category_id === c.id);
+                        return (
+                            <div key={c.id}>
+                                <h3 className="font-semibold">{c.name}</h3>
+                                <p className="text-sm">Total: ${row ? row.total_amount : 0}</p>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+            <div>
+                <h2 className="font-semibold text-lg mb-3">Monthly Totals</h2>
+                <ul className="flex flex-col gap-1">
+                    {monthly.map((row, index) => (
+                        <li key={index} className="text-sm">
+                            {row.month}: ${row.total}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <div>
+                <h2 className="font-semibold text-lg mb-3">Budget vs Actual</h2>
+                <div className="flex flex-col gap-3">
+                    {categories.map(c => (
+                        <div key={c.id}>
+                            <h3 className="font-semibold">{c.name}</h3>
+                            <ul className="flex flex-col gap-1">
+                                {budgetVsActual.filter(r => r.category_id === c.id).map((r, index) => (
+                                    <li key={index} className="text-sm">
+                                        {r.period}: Budgeted ${r.budgeted}, Actual ${r.actual}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            </div>
+    </CardContent>
+  </Card>
+)
 }
 
 export default Summary
