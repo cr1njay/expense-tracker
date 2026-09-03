@@ -3,13 +3,14 @@ import Signup from './Signup'
 import Transactions from './Transactions'
 import Budgets from './Budgets'
 import Categories from './Categories'
+import Summary from './Summary'
 import { useState, useEffect } from 'react'
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"))
   const [showSignup, setShowSignup] = useState(false)
   const [categories, setCategories] = useState([])
-  const [showBudgets, setShowBudgets] = useState(false)
+  const [view, setView] = useState("transactions")
 
   useEffect(() => {
     if (token) {
@@ -45,11 +46,14 @@ function App() {
     token ? (
       <>
         <button onClick={handleLogout}>Logout</button>
-        <button onClick={() => setShowBudgets(!showBudgets)}>
-          {showBudgets ? "View Transactions" : "View Budgets"}
-        </button>
+        <button onClick={() => setView("transactions")}>Transactions</button>
+        <button onClick={() => setView("budgets")}>Budgets</button>
+        <button onClick={() => setView("summary")}>Summary</button>
+        <Summary token={token} categories={categories} />
         <Categories token={token} categories={categories} setCategories={setCategories} />
-        {showBudgets ? <Budgets token={token} categories={categories} /> : <Transactions token={token} categories={categories} />}
+        {view === "transactions" && <Transactions token={token} categories={categories} />}
+        {view === "budgets" && <Budgets token={token} categories={categories} />}
+        {view === "summary" && <Summary token={token} categories={categories} />}
       </>
     ) : showSignup ? (
       <Signup onSignupSuccess={() => setShowSignup(false)} />
