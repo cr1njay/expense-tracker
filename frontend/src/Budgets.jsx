@@ -1,19 +1,18 @@
 import { useState, useEffect } from 'react'
 
-function Transactions({ token, categories }) {
-    const [transactions, setTransactions] = useState([])
+function Budgets({ token, categories }) {
+    const [budgets, setBudgets] = useState([])
     const [amount, setAmount] = useState("")
-    const [description, setDescription] = useState("")
-    const [date, setDate] = useState("")
+    const [period, setPeriod] = useState("")
     const [categoryId, setCategoryId] = useState("")
     const [editingId, setEditingId] = useState(null)
     const getCategoryName = (categoryId) => {
         const match = categories.find(c => c.id === categoryId);
         return match ? match.name : "Uncategorized";
-    };
+    }
 
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/transactions", {
+        fetch("http://127.0.0.1:5000/budgets", {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -21,19 +20,19 @@ function Transactions({ token, categories }) {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Failed to fetch transactions");
+                throw new Error("Failed to fetch budgets");
             }
             return response.json();
         })
         .then(data => {
-            setTransactions(data);
+            setBudgets(data);
         })
         .catch(error => console.log(error));
     }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        const url = editingId ? `http://127.0.0.1:5000/transactions/${editingId}` : "http://127.0.0.1:5000/transactions";
+        const url = editingId ? `http://127.0.0.1:5000/budgets/${editingId}` : "http://127.0.0.1:5000/budgets";
         const method = editingId ? "PUT" : "POST";
 
         fetch(url, {
@@ -42,28 +41,28 @@ function Transactions({ token, categories }) {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({ amount: amount, description: description, date: date, category_id: categoryId || null })
+            body: JSON.stringify({ amount, period, category_id: categoryId || null})
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Failed to add transaction");
+                throw new Error("Failed to add budget");
             }
             return response.json();
         })
         .then(data => {
             if (editingId) {
-                setTransactions(transactions.map(t => t.id === editingId ? data : t));
+                setBudgets(budgets.map(b => b.id === editingId ? data : b));
             } else {
-                setTransactions([...transactions, data]);
+                setBudgets([...budgets, data]);
             }
-            setEditingId(null);
-            setAmount(""); setDescription(""); setDate(""); setCategoryId("");
+            setEditingId(null); 
+            setAmount(""); setPeriod(""); setCategoryId("");
         })
         .catch(error => console.log(error));
     }
 
     const handleDelete = (id) => {
-        fetch(`http://127.0.0.1:5000/transactions/${id}`, {
+        fetch(`http://127.0.0.1:5000/budgets/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -72,44 +71,42 @@ function Transactions({ token, categories }) {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Failed to delete transaction");
+                throw new Error("Failed to delete budget");
             }
             return response.json();
         })
         .then(data => {
-            setTransactions(transactions.filter(t => t.id !== id));
+            setBudgets(budgets.filter(budget => budget.id !== id));
         })
         .catch(error => console.log(error));
     }
 
-    const handleEditClick = (t) => {
-        setAmount(t.amount);
-        setDescription(t.description);
-        setDate(t.date);
-        setCategoryId(t.category_id || "");
-        setEditingId(t.id);
+    const handleEditClick = (b) => {
+        setAmount(b.amount);
+        setPeriod(b.period);
+        setCategoryId(b.category_id || "");
+        setEditingId(b.id);
     }
 
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <input placeholder="Amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)}></input>
-                <input placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}></input>
-                <input placeholder="Date" type="date" value={date} onChange={(e) => setDate(e.target.value)}></input>
+                <input type="number" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)}></input>
+                <input type="month" placeholder="Period" value={period} onChange={(e) => setPeriod(e.target.value)}></input>
                 <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
                     <option value="">Select Category</option>
                     {categories.map(c => (
                         <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                 </select>
-                <button type="submit">{editingId ? "Update Transaction" : "Add Transaction"}</button>
+                <button type="submit">{editingId ? "Update Budget" : "Add Budget"}</button>
             </form>
             <ul>
-                {transactions.map(t => (
-                    <li key={t.id}>
-                        {t.amount} - {t.description} - {getCategoryName(t.category_id)}
-                        <button onClick={() => handleEditClick(t)}>Edit</button>
-                        <button onClick={() => handleDelete(t.id)}>Delete</button>
+                {budgets.map(b => (
+                    <li key={b.id}>
+                        {b.amount} - {b.period} - {getCategoryName(b.category_id)}
+                        <button onClick={() => handleEditClick(b)}>Edit</button>
+                        <button onClick={() => handleDelete(b.id)}>Delete</button>
                     </li>
                 ))}
             </ul>
@@ -117,4 +114,4 @@ function Transactions({ token, categories }) {
     )
 }
 
-export default Transactions
+export default Budgets

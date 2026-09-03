@@ -164,6 +164,8 @@ def delete_category(id):
         return {"error": "Category not found"}, 404
     if category.user_id != int(current_user_id):
         return {"error": "Unauthorized access"}, 403
+    Transaction.query.filter_by(category_id=id).update({"category_id": None})
+    Budget.query.filter_by(category_id=id).update({"category_id": None})
     db.session.delete(category)
     db.session.commit()
     return {"message": "Category deleted successfully!"}
@@ -246,12 +248,14 @@ def update_budget(id):
         except ValueError:
             return {"error": "Period must be in YYYY-MM format."}, 400
         budget.period = data['period']
-    if "category_id" in data:
+    if "category_id" in data and data['category_id'] is not None:
         new_category_id = data['category_id']
         category = Category.query.get(new_category_id)
-        if not category or category.user_id != int(current_user_id):
+        if category is None or category.user_id != int(current_user_id):
             return {"error": "Invalid category"}, 400
         budget.category_id = new_category_id
+    elif "category_id" in data and data['category_id'] is None:
+        budget.category_id = None
     db.session.commit()
     return budget.to_dict(), 200
 

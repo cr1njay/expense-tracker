@@ -1,11 +1,15 @@
 import Login from './Login'
 import Signup from './Signup'
 import Transactions from './Transactions'
+import Budgets from './Budgets'
+import Categories from './Categories'
 import { useState, useEffect } from 'react'
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"))
   const [showSignup, setShowSignup] = useState(false)
+  const [categories, setCategories] = useState([])
+  const [showBudgets, setShowBudgets] = useState(false)
 
   useEffect(() => {
     if (token) {
@@ -18,11 +22,34 @@ function App() {
         setToken(null);
     }
 
+  useEffect(() => {
+    fetch("http://127.0.0.1:5000/categories", {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      } 
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch categories");
+      }
+      return response.json();
+    })
+    .then(data => {
+      setCategories(data);
+    })
+    .catch(error => console.log(error));
+  }, [])
+
   return (
     token ? (
       <>
         <button onClick={handleLogout}>Logout</button>
-        <Transactions token={token} />
+        <button onClick={() => setShowBudgets(!showBudgets)}>
+          {showBudgets ? "View Transactions" : "View Budgets"}
+        </button>
+        <Categories token={token} categories={categories} setCategories={setCategories} />
+        {showBudgets ? <Budgets token={token} categories={categories} /> : <Transactions token={token} categories={categories} />}
       </>
     ) : showSignup ? (
       <Signup onSignupSuccess={() => setShowSignup(false)} />
