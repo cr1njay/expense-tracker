@@ -8,6 +8,11 @@ function Transactions({ token }) {
     const [categories, setCategories] = useState([])
     const [categoryId, setCategoryId] = useState("")
     const [newCategoryName, setNewCategoryName] = useState("")
+    const [editingId, setEditingId] = useState(null)
+    const getCategoryName = (categoryId) => {
+        const match = categories.find(c => c.id === categoryId);
+        return match ? match.name : "Uncategorized";
+    };
 
     useEffect(() => {
         fetch("http://127.0.0.1:5000/transactions", {
@@ -47,10 +52,14 @@ function Transactions({ token }) {
         .catch(error => console.log(error));
     }, [])
 
-    const handleCreate = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
-        fetch("http://127.0.0.1:5000/transactions", {
-            method: "POST",
+        console.log("categoryId:", categoryId, "editingId:", editingId, "date:", date, "amount:", amount);
+        const url = editingId ? `http://127.0.0.1:5000/transactions/${editingId}` : "http://127.0.0.1:5000/transactions";
+        const method = editingId ? "PUT" : "POST";
+
+        fetch(url, {
+            method: method,
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -64,7 +73,13 @@ function Transactions({ token }) {
             return response.json();
         })
         .then(data => {
-            setTransactions([...transactions, data]);
+            if (editingId) {
+                setTransactions(transactions.map(t => t.id === editingId ? data : t));
+            } else {
+                setTransactions([...transactions, data]);
+            }
+            setEditingId(null);
+            setAmount(""); setDescription(""); setDate(""); setCategoryId("");
         })
         .catch(error => console.log(error));
     }
@@ -112,9 +127,17 @@ function Transactions({ token }) {
         .catch(error => console.log(error));
     }
 
+    const handleEditClick = (t) => {
+        setAmount(t.amount);
+        setDescription(t.description);
+        setDate(t.date);
+        setCategoryId(t.category_id || "");
+        setEditingId(t.id);
+    }
+
     return (
         <>
-            <form onSubmit={handleCreate}>
+            <form onSubmit={handleSubmit}>
                 <input value={amount} onChange={(e) => setAmount(e.target.value)}></input>
                 <input value={description} onChange={(e) => setDescription(e.target.value)}></input>
                 <input type="date" value={date} onChange={(e) => setDate(e.target.value)}></input>
@@ -124,7 +147,7 @@ function Transactions({ token }) {
                         <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                 </select>
-                <button type="submit">Add Transaction</button>
+                <button type="submit">{editingId ? "Update Transaction" : "Add Transaction"}</button>
             </form>
             <form onSubmit={handleCreateCategory}>
                 <input value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} placeholder="New Category Name"></input>
@@ -133,7 +156,8 @@ function Transactions({ token }) {
             <ul>
                 {transactions.map(t => (
                     <li key={t.id}>
-                        {t.amount} - {t.description}
+                        {t.amount} - {t.description} - {getCategoryName(t.category_id)}
+                        <button onClick={() => handleEditClick(t)}>Edit</button>
                         <button onClick={() => handleDelete(t.id)}>Delete</button>
                     </li>
                 ))}
