@@ -9,7 +9,7 @@ function Summary({ token, categories }) {
     const [budgetVsActual, setBudgetVsActual] = useState([]);
 
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/summary/by-category", {
+        fetch(`${import.meta.env.VITE_API_URL}/summary/by-category`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -28,7 +28,7 @@ function Summary({ token, categories }) {
     }, [token])
 
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/summary/monthly", {
+        fetch(`${import.meta.env.VITE_API_URL}/summary/monthly`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -47,7 +47,7 @@ function Summary({ token, categories }) {
     }, [token])
 
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/summary/budget-vs-actual", {
+        fetch(`${import.meta.env.VITE_API_URL}/summary/budget-vs-actual`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`

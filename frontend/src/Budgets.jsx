@@ -15,7 +15,7 @@ function Budgets({ token, categories }) {
     }
 
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/budgets", {
+        fetch(`${import.meta.env.VITE_API_URL}/budgets`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -35,7 +35,7 @@ function Budgets({ token, categories }) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        const url = editingId ? `http://127.0.0.1:5000/budgets/${editingId}` : "http://127.0.0.1:5000/budgets";
+        const url = editingId ? `${import.meta.env.VITE_API_URL}/budgets/${editingId}` : `${import.meta.env.VITE_API_URL}/budgets`;
         const method = editingId ? "PUT" : "POST";
 
         fetch(url, {
@@ -65,7 +65,7 @@ function Budgets({ token, categories }) {
     }
 
     const handleDelete = (id) => {
-        fetch(`http://127.0.0.1:5000/budgets/${id}`, {
+        fetch(`${import.meta.env.VITE_API_URL}/budgets/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

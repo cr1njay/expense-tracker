@@ -16,7 +16,7 @@ function Transactions({ token, categories }) {
     };
 
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/transactions", {
+        fetch(`${import.meta.env.VITE_API_URL}/transactions`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -36,7 +36,7 @@ function Transactions({ token, categories }) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        const url = editingId ? `http://127.0.0.1:5000/transactions/${editingId}` : "http://127.0.0.1:5000/transactions";
+        const url = editingId ? `${import.meta.env.VITE_API_URL}/transactions/${editingId}` : `${import.meta.env.VITE_API_URL}/transactions`;
         const method = editingId ? "PUT" : "POST";
 
         fetch(url, {
@@ -66,7 +66,7 @@ function Transactions({ token, categories }) {
     }
 
     const handleDelete = (id) => {
-        fetch(`http://127.0.0.1:5000/transactions/${id}`, {
+        fetch(`${import.meta.env.VITE_API_URL}/transactions/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

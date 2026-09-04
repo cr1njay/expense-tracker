@@ -10,7 +10,7 @@ function Categories({ token, categories, setCategories }) {
 
     const handleCreateCategory = (e) => {
         e.preventDefault()
-        const url = editingId ? `http://127.0.0.1:5000/categories/${editingId}` : "http://127.0.0.1:5000/categories";
+        const url = editingId ? `${import.meta.env.VITE_API_URL}/categories/${editingId}` : `${import.meta.env.VITE_API_URL}/categories`;
         const method = editingId ? "PUT" : "POST";
         fetch(url, {
             method: method,
@@ -39,7 +39,7 @@ function Categories({ token, categories, setCategories }) {
     }
 
     const handleDeleteCategory = (id) => {
-        fetch(`http://127.0.0.1:5000/categories/${id}`, {
+        fetch(`${import.meta.env.VITE_API_URL}/categories/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

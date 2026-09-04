@@ -10,7 +10,7 @@ function Signup({ onSignupSuccess }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch("http://127.0.0.1:5000/signup", {
+        fetch(`${import.meta.env.VITE_API_URL}/signup`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: username, email: email, password: password })
