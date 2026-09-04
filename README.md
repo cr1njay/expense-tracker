@@ -72,7 +72,3 @@ All routes below require a valid JWT in the `Authorization: Bearer <token>` head
 - `GET /summary/by-category` — total spending per category
 - `GET /summary/monthly` — total spending per month
 - `GET /summary/budget-vs-actual` — budgeted vs. actual spending per budget
-## Status
-✅ Backend complete — full data model, JWT auth, ownership checks, and summary endpoints, all tested.
-✅ Frontend complete — full CRUD UI across all resources, category-grouped views, dark-mode styling with shadcn/ui.
-✅ Deployed and live (Render + Supabase + Vercel).
