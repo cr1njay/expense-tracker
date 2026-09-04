@@ -1,5 +1,8 @@
 # Expense Tracker
  
+**Live demo:** https://expense-tracker-cm78iiscw-cr1njay.vercel.app/
+*(backend runs on a free instance and may take ~30 seconds to spin up on first load)*
+ 
 A full-stack web app for tracking personal expenses — log transactions, organize them by category, set budgets, and see spending broken down over time.
  
 ## Features
@@ -10,9 +13,9 @@ A full-stack web app for tracking personal expenses — log transactions, organi
 - Responsive dark-mode UI built with shadcn/ui and Tailwind CSS
 ## Tech Stack
 - **Backend:** Python, Flask, Flask-SQLAlchemy, Flask-JWT-Extended, Werkzeug (password hashing), Flask-CORS
-- **Database:** PostgreSQL (production) / SQLite (development)
+- **Database:** PostgreSQL (Supabase, production) / SQLite (development)
 - **Frontend:** React (Vite), Tailwind CSS, shadcn/ui
-- **Deployment:** AWS EC2 (backend), AWS RDS (PostgreSQL), AWS S3 + CloudFront (frontend)
+- **Deployment:** Render (backend), Supabase (PostgreSQL), Vercel (frontend)
 ## Project Structure
 ```
 expense-tracker/
@@ -72,4 +75,4 @@ All routes below require a valid JWT in the `Authorization: Bearer <token>` head
 ## Status
 ✅ Backend complete — full data model, JWT auth, ownership checks, and summary endpoints, all tested.
 ✅ Frontend complete — full CRUD UI across all resources, category-grouped views, dark-mode styling with shadcn/ui.
-🚧 Deployment to AWS in progress.
+✅ Deployed and live (Render + Supabase + Vercel).
